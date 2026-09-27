@@ -21,7 +21,8 @@ import {
   Check, 
   RotateCcw,
   Zap,
-  Target
+  Target,
+  ChevronRight
 } from 'lucide-react';
 import { OpportunityScenario, ShapFactor } from '../../types/dashboard';
 
@@ -46,21 +47,20 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
   }, [selectedOppId, currentScenario]);
 
   // Causal simulation calculation
-  // Base win rate + latency delta effect + sponsor meetings effect + discount elasticity
   const calculateSimulatedWinRate = (): number => {
     const base = currentScenario.baseWinRate;
     
-    // Latency effect: each day faster than current adds +2.8%, each day slower removes -3.2%
+    // Latency effect: each day faster adds +2.8%, each day slower removes -3.2%
     const latencyDiff = currentScenario.currentQuoteLatency - quoteLatencyDays;
     const latencyImpact = latencyDiff > 0 ? latencyDiff * 2.8 : latencyDiff * 3.2;
 
-    // Sponsor meetings effect: each extra meeting adds +5.5%, fewer meetings deducts -7.0%
+    // Sponsor meetings effect: each extra meeting adds +5.5%
     const meetingDiff = sponsorMeetings - currentScenario.currentSponsorMeetings;
     const meetingImpact = meetingDiff > 0 ? meetingDiff * 5.5 : meetingDiff * 7.0;
 
-    // Discount effect: non-linear optimal elasticity
+    // Discount effect
     const discountDiff = currentScenario.currentDiscount - discountPct;
-    const discountImpact = discountDiff * -0.8; // higher discount slightly improves close rate, but with diminishing returns
+    const discountImpact = discountDiff * -0.8;
 
     const result = Math.round(Math.min(99, Math.max(10, base + latencyImpact + meetingImpact + discountImpact)));
     return result;
@@ -76,33 +76,33 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
   };
 
   return (
-    <div className="rounded-2xl bg-[#0f172a]/90 border border-slate-800 backdrop-blur-md shadow-glass overflow-hidden flex flex-col">
+    <div className="rounded-2xl bg-white border border-slate-200 shadow-soft overflow-hidden flex flex-col">
       {/* Workspace Header & Account Selector */}
-      <div className="p-5 border-b border-slate-800/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
         <div>
           <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-400">
+            <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200/50">
               <BrainCircuit className="w-4 h-4" />
             </div>
-            <h2 className="text-base font-bold text-white tracking-tight font-['Outfit']">
-              Module 3: Causal XAI & Counterfactual "What-If" Workspace
+            <h2 className="text-base font-bold text-slate-900 tracking-tight">
+              Deal Win Drivers & Interactive "What-If" Simulator
             </h2>
-            <span className="px-2 py-0.5 text-[10px] font-mono font-medium rounded bg-slate-800 text-violet-400 border border-slate-700">
-              SHAP Attributions + Pearl Causal Graph
+            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-indigo-100/70 text-indigo-700">
+              Explainable AI (SHAP)
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Explainable AI feature attribution with real-time counterfactual interventions to model win-rate sensitivity.
+          <p className="text-xs text-slate-500 mt-1">
+            See exactly why deals are won or stalled, and simulate how reducing quote turnaround or booking executive meetings boosts win rates.
           </p>
         </div>
 
         {/* Opportunity Selector Dropdown */}
         <div className="flex items-center space-x-2 self-start md:self-auto">
-          <label className="text-xs text-slate-400 font-medium">Target Account:</label>
+          <label className="text-xs text-slate-600 font-semibold">Select Deal:</label>
           <select
             value={selectedOppId}
             onChange={(e) => setSelectedOppId(e.target.value)}
-            className="bg-slate-900 border border-slate-700 text-white font-medium text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-violet-500 shadow-inner"
+            className="bg-white border border-slate-300 text-slate-800 font-semibold text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 shadow-sm"
           >
             {scenarios.map((scen) => (
               <option key={scen.id} value={scen.id}>
@@ -114,22 +114,22 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
       </div>
 
       {/* Main Workspace Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-slate-800/80">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
         {/* Left: SHAP Attribution Bar Chart (6 Cols) */}
         <div className="lg:col-span-6 p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  SHAP Value Factor Attributions
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Key Deal Drivers & Risk Factors
                 </h3>
-                <p className="text-[11px] text-slate-400">
-                  Marginal contribution of key drivers to current <strong className="text-white">{currentScenario.baseWinRate}%</strong> win propensity
+                <p className="text-xs text-slate-500">
+                  Impact on current <strong className="text-slate-900">{currentScenario.baseWinRate}%</strong> win propensity
                 </p>
               </div>
 
-              <span className="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
-                Owner: {currentScenario.leadOwner}
+              <span className="text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                Rep: {currentScenario.leadOwner}
               </span>
             </div>
 
@@ -141,18 +141,18 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
                   data={currentScenario.shapFactors}
                   margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
                   <XAxis 
                     type="number" 
                     domain={[-30, 30]} 
                     tickFormatter={(val) => `${val > 0 ? '+' : ''}${val}%`}
-                    stroke="#64748b"
-                    fontSize={10}
+                    stroke="#94a3b8"
+                    fontSize={11}
                   />
                   <YAxis 
                     type="category" 
                     dataKey="featureName" 
-                    stroke="#94a3b8" 
+                    stroke="#475569" 
                     fontSize={11}
                     width={140}
                     tickLine={false}
@@ -162,17 +162,17 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
                       if (active && payload && payload.length) {
                         const data = payload[0].payload as ShapFactor;
                         return (
-                          <div className="bg-[#0f172a] border border-slate-700 rounded-lg p-3 text-xs max-w-xs shadow-xl">
-                            <div className="font-bold text-white flex items-center justify-between gap-2 border-b border-slate-800 pb-1">
+                          <div className="bg-white border border-slate-200 rounded-xl p-3 text-xs max-w-xs shadow-xl text-slate-800">
+                            <div className="font-bold text-slate-900 flex items-center justify-between gap-2 border-b border-slate-100 pb-1">
                               <span>{data.featureName}</span>
-                              <span className={data.impactPercentage > 0 ? 'text-emerald-400 font-mono' : 'text-rose-400 font-mono'}>
+                              <span className={data.impactPercentage > 0 ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'}>
                                 {data.impactPercentage > 0 ? `+${data.impactPercentage}%` : `${data.impactPercentage}%`}
                               </span>
                             </div>
-                            <p className="text-slate-300 text-[11px] mt-1.5 leading-relaxed">
+                            <p className="text-slate-600 text-xs mt-1.5 leading-relaxed">
                               {data.description}
                             </p>
-                            <div className="mt-1 text-[10px] text-slate-500 font-mono">
+                            <div className="mt-1 text-[11px] text-slate-400">
                               Category: {data.category}
                             </div>
                           </div>
@@ -181,7 +181,7 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
                       return null;
                     }}
                   />
-                  <ReferenceLine x={0} stroke="#475569" strokeWidth={1.5} />
+                  <ReferenceLine x={0} stroke="#cbd5e1" strokeWidth={1.5} />
                   <Bar dataKey="impactPercentage" radius={[4, 4, 4, 4]}>
                     {currentScenario.shapFactors.map((entry, index) => (
                       <Cell 
@@ -196,46 +196,46 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
           </div>
 
           {/* Key Risk Summary */}
-          <div className="mt-3 p-3 rounded-xl bg-slate-900/70 border border-slate-800 text-[11px]">
-            <div className="flex items-center space-x-2 text-rose-400 font-semibold mb-1">
-              <AlertCircle className="w-3.5 h-3.5" />
-              <span>Primary Bottleneck Detected</span>
+          <div className="mt-3 p-3.5 rounded-xl bg-rose-50/60 border border-rose-200/80 text-xs">
+            <div className="flex items-center space-x-2 text-rose-800 font-bold mb-1">
+              <AlertCircle className="w-4 h-4 text-rose-600" />
+              <span>Primary Bottleneck to Fix</span>
             </div>
-            <p className="text-slate-300 leading-snug">
-              Quote turnaround latency ({currentScenario.currentQuoteLatency} days) imposes a <strong className="text-rose-400 font-mono">-22%</strong> penalty on deal closure due to lack of competitive agility.
+            <p className="text-rose-900 leading-snug">
+              Quote revision latency is currently taking {currentScenario.currentQuoteLatency} days, which imposes a <strong className="font-bold text-rose-700">-22%</strong> penalty on closing this deal.
             </p>
           </div>
         </div>
 
         {/* Right: Counterfactual Simulation & Output Card (6 Cols) */}
-        <div className="lg:col-span-6 p-5 flex flex-col justify-between bg-slate-950/40">
+        <div className="lg:col-span-6 p-5 flex flex-col justify-between bg-slate-50/50">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
-                <Sliders className="w-4 h-4 text-violet-400" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  Counterfactual "What-If" Sliders
+                <Sliders className="w-4 h-4 text-indigo-600" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Simulate Deal Interventions
                 </h3>
               </div>
               <button
                 onClick={handleResetSliders}
-                className="flex items-center space-x-1 text-[10px] text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-900 border border-slate-800 transition-colors"
+                className="flex items-center space-x-1 text-xs text-slate-600 hover:text-slate-900 px-2.5 py-1 rounded-lg bg-white border border-slate-200 shadow-sm transition-colors"
               >
                 <RotateCcw className="w-3 h-3" />
-                <span>Reset to Baseline</span>
+                <span>Reset Sliders</span>
               </button>
             </div>
 
             {/* Interactive Sliders */}
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               {/* Slider 1: Quote Latency (Days) */}
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-soft">
                 <div className="flex justify-between items-center text-xs mb-1.5">
-                  <span className="text-slate-300 font-medium">Quote Revision Latency</span>
-                  <span className={`font-mono font-bold text-xs px-2 py-0.5 rounded ${
-                    quoteLatencyDays <= 4 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-800 text-slate-200'
+                  <span className="text-slate-700 font-semibold">Quote Revision Speed</span>
+                  <span className={`font-bold text-xs px-2.5 py-0.5 rounded-full ${
+                    quoteLatencyDays <= 4 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-700'
                   }`}>
-                    {quoteLatencyDays} Days {quoteLatencyDays <= 4 && '⚡ Optimal'}
+                    {quoteLatencyDays} Days {quoteLatencyDays <= 4 && '⚡ Fast Turnaround'}
                   </span>
                 </div>
                 <input 
@@ -245,23 +245,23 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
                   step={1}
                   value={quoteLatencyDays}
                   onChange={(e) => setQuoteLatencyDays(Number(e.target.value))}
-                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
                 />
-                <div className="flex justify-between text-[10px] text-slate-500 mt-1">
-                  <span>1 Day (Ultra-Fast)</span>
-                  <span className="text-slate-400">Current: {currentScenario.currentQuoteLatency}d</span>
-                  <span>20 Days (Stalled)</span>
+                <div className="flex justify-between text-[11px] text-slate-500 mt-1">
+                  <span>1 Day (Instant)</span>
+                  <span className="text-slate-700 font-medium">Current: {currentScenario.currentQuoteLatency}d</span>
+                  <span>20 Days (Slow)</span>
                 </div>
               </div>
 
               {/* Slider 2: Executive Sponsor Meetings */}
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-soft">
                 <div className="flex justify-between items-center text-xs mb-1.5">
-                  <span className="text-slate-300 font-medium">Executive Sponsor Alignments</span>
-                  <span className={`font-mono font-bold text-xs px-2 py-0.5 rounded ${
-                    sponsorMeetings >= 3 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-800 text-slate-200'
+                  <span className="text-slate-700 font-semibold">Executive Sponsor Meetings</span>
+                  <span className={`font-bold text-xs px-2.5 py-0.5 rounded-full ${
+                    sponsorMeetings >= 3 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-700'
                   }`}>
-                    {sponsorMeetings} Meetings {sponsorMeetings >= 3 && '🎯 Multi-Threaded'}
+                    {sponsorMeetings} Meetings {sponsorMeetings >= 3 && '🎯 C-Suite Aligned'}
                   </span>
                 </div>
                 <input 
@@ -271,20 +271,20 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
                   step={1}
                   value={sponsorMeetings}
                   onChange={(e) => setSponsorMeetings(Number(e.target.value))}
-                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
                 />
-                <div className="flex justify-between text-[10px] text-slate-500 mt-1">
-                  <span>0 (Single-Thread)</span>
-                  <span className="text-slate-400">Current: {currentScenario.currentSponsorMeetings}</span>
-                  <span>8 (C-Suite Embedded)</span>
+                <div className="flex justify-between text-[11px] text-slate-500 mt-1">
+                  <span>0 (No Exec Access)</span>
+                  <span className="text-slate-700 font-medium">Current: {currentScenario.currentSponsorMeetings}</span>
+                  <span>8 (Deeply Connected)</span>
                 </div>
               </div>
 
               {/* Slider 3: Discount / Concession % */}
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-soft">
                 <div className="flex justify-between items-center text-xs mb-1.5">
-                  <span className="text-slate-300 font-medium">Target Discount / Margin Concession</span>
-                  <span className="font-mono font-bold text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-200">
+                  <span className="text-slate-700 font-semibold">Price Discount / Concession</span>
+                  <span className="font-bold text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
                     {discountPct}%
                   </span>
                 </div>
@@ -295,35 +295,35 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
                   step={1}
                   value={discountPct}
                   onChange={(e) => setDiscountPct(Number(e.target.value))}
-                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
                 />
-                <div className="flex justify-between text-[10px] text-slate-500 mt-1">
-                  <span>0% (Full Price)</span>
-                  <span className="text-slate-400">Current: {currentScenario.currentDiscount}%</span>
-                  <span>30% (High Margin Cut)</span>
+                <div className="flex justify-between text-[11px] text-slate-500 mt-1">
+                  <span>0% (Standard)</span>
+                  <span className="text-slate-700 font-medium">Current: {currentScenario.currentDiscount}%</span>
+                  <span>30% (High Discount)</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Dynamic Counterfactual Output Card */}
-          <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-violet-950/40 border border-violet-500/30 shadow-lg">
+          <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-blue-50 via-indigo-50/50 to-white border border-blue-200/80 shadow-soft">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-violet-300 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-violet-400" />
-                  Live Counterfactual Projection
+                <span className="text-xs uppercase font-bold tracking-wider text-blue-800 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                  Simulated Win Propensity
                 </span>
                 <div className="flex items-baseline space-x-2 mt-1">
-                  <span className="text-slate-400 text-sm line-through font-mono">
+                  <span className="text-slate-400 text-sm line-through">
                     {currentScenario.baseWinRate}%
                   </span>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
-                  <span className="text-2xl font-extrabold text-white font-['Outfit']">
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="text-2xl font-extrabold text-slate-900">
                     {simulatedWinRate}%
                   </span>
-                  <span className={`text-xs font-bold font-mono px-2 py-0.5 rounded-full ${
-                    winRateDelta >= 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                    winRateDelta >= 0 ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-rose-100 text-rose-800 border border-rose-200'
                   }`}>
                     {winRateDelta >= 0 ? `+${winRateDelta}%` : `${winRateDelta}%`}
                   </span>
@@ -331,20 +331,20 @@ export const CausalXaiWorkspace: React.FC<CausalXaiWorkspaceProps> = ({ scenario
               </div>
 
               <div className="text-right">
-                <span className="text-[10px] text-slate-400">Expected Value Delta</span>
-                <div className="text-sm font-bold text-emerald-400 font-mono">
+                <span className="text-[11px] text-slate-500">Pipeline Value Gain</span>
+                <div className="text-sm font-bold text-emerald-700">
                   +${Math.round(((simulatedWinRate - currentScenario.baseWinRate) / 100) * currentScenario.amount).toLocaleString()}
                 </div>
               </div>
             </div>
 
             {/* Prescriptive Guidance */}
-            <div className="mt-2.5 pt-2 border-t border-slate-800 text-[11px] text-slate-300 flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <div className="mt-3 pt-2.5 border-t border-blue-100 text-xs text-slate-700 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-500 shrink-0" />
               <span>
                 {quoteLatencyDays <= 4 
-                  ? 'High-Impact Action: Turnaround ≤ 4 days accelerates closing cycle by +21 days.' 
-                  : 'Actionable: Reducing quote turnaround below 4 days yields an instant +14% lift in win propensity.'}
+                  ? 'Great Plan: Accelerating quote turnaround to ≤ 4 days will cut the sales cycle by 21 days.' 
+                  : 'Recommended Action: Reducing quote turnaround under 4 days gives an immediate +14% lift in win probability.'}
               </span>
             </div>
           </div>

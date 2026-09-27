@@ -6,9 +6,8 @@ import {
   Users, 
   ArrowUpRight, 
   ArrowDownRight, 
-  AlertTriangle,
-  Info,
-  ShieldCheck
+  AlertCircle,
+  CheckCircle2
 } from 'lucide-react';
 import { ExecutiveKpis } from '../../types/dashboard';
 
@@ -19,173 +18,179 @@ interface ExecutiveKpiBarProps {
 export const ExecutiveKpiBar: React.FC<ExecutiveKpiBarProps> = ({ data }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* 1. Forecasted Revenue with Confidence Interval */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#0f172a]/80 border border-slate-800 p-5 backdrop-blur-md shadow-glass transition-all hover:border-blue-500/40 hover:shadow-glow-blue group">
+      {/* 1. Total Forecasted Revenue */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-soft hover:shadow-card shadow-card-hover transition-all group">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <DollarSign className="w-4 h-4 text-blue-400" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+            <span className="p-1 rounded-md bg-blue-50 text-blue-600">
+              <DollarSign className="w-3.5 h-3.5" />
+            </span>
             Total Forecasted Revenue
           </span>
-          <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+          <span className="flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
             <ArrowUpRight className="w-3 h-3" />
             +{data.forecastedRevenue.growthPercentage}%
           </span>
         </div>
 
-        <div className="flex items-baseline space-x-2">
-          <div className="text-2xl lg:text-3xl font-extrabold text-white font-['Outfit'] tracking-tight">
+        <div className="flex items-baseline space-x-2 mt-1">
+          <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
             ${data.forecastedRevenue.base.toFixed(1)}M
           </div>
-          <span className="text-xs font-mono font-medium text-slate-400">
-            ± ${(data.forecastedRevenue.confidenceInterval * 1000).toFixed(0)}k CI
+          <span className="text-xs font-medium text-slate-500">
+            ± ${(data.forecastedRevenue.confidenceInterval * 1000).toFixed(0)}k range
           </span>
         </div>
 
         {/* Confidence Interval Visual Range */}
-        <div className="mt-3.5">
-          <div className="flex justify-between text-[10px] text-slate-400 mb-1 font-mono">
-            <span>P10: ${data.forecastedRevenue.lowerBound.toFixed(1)}M</span>
-            <span className="text-cyan-400 font-semibold">P50 Expected</span>
-            <span>P90: ${data.forecastedRevenue.upperBound.toFixed(1)}M</span>
+        <div className="mt-4">
+          <div className="flex justify-between text-[11px] text-slate-500 mb-1.5">
+            <span>Low: ${data.forecastedRevenue.lowerBound.toFixed(1)}M</span>
+            <span className="text-blue-600 font-semibold">Expected $14.2M</span>
+            <span>High: ${data.forecastedRevenue.upperBound.toFixed(1)}M</span>
           </div>
-          <div className="w-full bg-slate-800/80 rounded-full h-2 p-0.5 relative overflow-hidden flex items-center">
-            {/* Gaussian gradient confidence band */}
+          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden flex items-center">
             <div 
-              className="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 w-full shadow-glow-blue"
-              style={{ opacity: 0.85 }}
+              className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500 w-full"
             />
           </div>
-          <div className="text-[10px] text-slate-500 mt-1.5 flex items-center justify-between">
-            <span>Neural Hawkes Multi-Horizon Bayesian Fit</span>
-            <span className="text-emerald-400 font-medium">95% Credible Interval</span>
+          <div className="text-[11px] text-slate-500 mt-2 flex items-center justify-between">
+            <span>95% statistical confidence</span>
+            <span className="text-emerald-600 font-medium">On Track to Target</span>
           </div>
         </div>
       </div>
 
       {/* 2. Weighted Win Propensity */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#0f172a]/80 border border-slate-800 p-5 backdrop-blur-md shadow-glass transition-all hover:border-emerald-500/40 hover:shadow-glow-emerald group">
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-soft hover:shadow-card shadow-card-hover transition-all group">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <TrendingUp className="w-4 h-4 text-emerald-400" />
-            Weighted Win Propensity
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+            <span className="p-1 rounded-md bg-emerald-50 text-emerald-600">
+              <TrendingUp className="w-3.5 h-3.5" />
+            </span>
+            Weighted Win Rate
           </span>
-          <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+          <span className="flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
             <ArrowUpRight className="w-3 h-3" />
-            +{(data.weightedWinPropensity.current - data.weightedWinPropensity.historicalAvg).toFixed(1)}% vs Prior
+            +{(data.weightedWinPropensity.current - data.weightedWinPropensity.historicalAvg).toFixed(1)}% vs avg
           </span>
         </div>
 
-        <div className="flex items-baseline space-x-2">
-          <div className="text-2xl lg:text-3xl font-extrabold text-white font-['Outfit'] tracking-tight">
+        <div className="flex items-baseline space-x-2 mt-1">
+          <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
             {data.weightedWinPropensity.current}%
           </div>
-          <span className="text-xs text-slate-400">
-            Pipeline Avg
+          <span className="text-xs text-slate-500">
+            Across open pipeline
           </span>
         </div>
 
-        {/* Sparkline & Bar */}
-        <div className="mt-3.5">
-          <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
-            <span>Historical baseline: {data.weightedWinPropensity.historicalAvg}%</span>
-            <span className="text-emerald-400 font-mono font-medium">High Conviction</span>
+        {/* Progress bar */}
+        <div className="mt-4">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1.5">
+            <span>Industry Benchmark: {data.weightedWinPropensity.historicalAvg}%</span>
+            <span className="text-emerald-700 font-semibold">Strong Momentum</span>
           </div>
-          <div className="w-full bg-slate-800/80 rounded-full h-2 relative overflow-hidden">
+          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
             <div 
-              className="h-full rounded-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-700 shadow-glow-emerald"
+              className="h-full rounded-full bg-emerald-500 transition-all duration-700"
               style={{ width: `${data.weightedWinPropensity.current}%` }}
             />
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
-            <span>SHAP Calibrated across 142 Active Pipeline Opps</span>
+          <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-2">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 inline-block" />
+            <span>Calibrated across 142 qualified opportunities</span>
           </div>
         </div>
       </div>
 
       {/* 3. Dynamic Deal Velocity */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#0f172a]/80 border border-slate-800 p-5 backdrop-blur-md shadow-glass transition-all hover:border-amber-500/40 hover:shadow-glow-amber group">
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-soft hover:shadow-card shadow-card-hover transition-all group">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-amber-400" />
-            Dynamic Deal Velocity
-          </span>
-          <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-            <ArrowDownRight className="w-3 h-3" />
-            {data.dealVelocity.deltaDays} Days Faster
-          </span>
-        </div>
-
-        <div className="flex items-baseline space-x-2">
-          <div className="text-2xl lg:text-3xl font-extrabold text-white font-['Outfit'] tracking-tight">
-            {data.dealVelocity.avgDays} <span className="text-lg font-normal text-slate-400">Days</span>
-          </div>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+            <span className="p-1 rounded-md bg-amber-50 text-amber-600">
+              <Clock className="w-3.5 h-3.5" />
+            </span>
             Average Sales Cycle
           </span>
+          <span className="flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
+            <ArrowDownRight className="w-3 h-3" />
+            5.2 days faster
+          </span>
         </div>
 
-        {/* Benchmark progress */}
-        <div className="mt-3.5">
-          <div className="flex justify-between text-[10px] text-slate-400 mb-1">
-            <span>Industry Benchmark: {data.dealVelocity.industryBenchmark}d</span>
-            <span className="text-amber-400 font-mono">29% Acceleration</span>
+        <div className="flex items-baseline space-x-2 mt-1">
+          <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            {data.dealVelocity.avgDays} <span className="text-lg font-normal text-slate-500">Days</span>
           </div>
-          <div className="w-full bg-slate-800/80 rounded-full h-2 relative overflow-hidden">
+          <span className="text-xs text-slate-500">
+            from lead to closed-won
+          </span>
+        </div>
+
+        {/* Velocity benchmark */}
+        <div className="mt-4">
+          <div className="flex justify-between text-[11px] text-slate-500 mb-1.5">
+            <span>Target Benchmark: {data.dealVelocity.industryBenchmark}d</span>
+            <span className="text-amber-700 font-semibold">29% Faster Cycle</span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
             <div 
-              className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all duration-700 shadow-glow-amber"
+              className="h-full rounded-full bg-amber-500 transition-all duration-700"
               style={{ width: `${(data.dealVelocity.avgDays / data.dealVelocity.industryBenchmark) * 100}%` }}
             />
           </div>
-          <div className="text-[10px] text-slate-500 mt-1.5">
-            Latency reduced via continuous touchpoint triggers
+          <div className="text-[11px] text-slate-500 mt-2">
+            Accelerated by rapid quote turnaround actions
           </div>
         </div>
       </div>
 
-      {/* 4. Salesforce FTE Capacity Utilization */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#0f172a]/80 border border-slate-800 p-5 backdrop-blur-md shadow-glass transition-all hover:border-cyan-500/40 hover:shadow-glow-blue group">
+      {/* 4. Sales Team Capacity */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-soft hover:shadow-card shadow-card-hover transition-all group">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <Users className="w-4 h-4 text-cyan-400" />
-            FTE Capacity Utilization
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+            <span className="p-1 rounded-md bg-indigo-50 text-indigo-600">
+              <Users className="w-3.5 h-3.5" />
+            </span>
+            Team Workload Capacity
           </span>
-          <span className="flex items-center gap-1 text-[11px] font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-            <AlertTriangle className="w-3 h-3" />
-            {data.capacityUtilization.burnoutRiskCount} Near Limit
+          <span className="flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+            <AlertCircle className="w-3 h-3" />
+            {data.capacityUtilization.burnoutRiskCount} Reps Busy
           </span>
         </div>
 
-        <div className="flex items-baseline space-x-2">
-          <div className="text-2xl lg:text-3xl font-extrabold text-white font-['Outfit'] tracking-tight">
+        <div className="flex items-baseline space-x-2 mt-1">
+          <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
             {data.capacityUtilization.percentage}%
           </div>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-500">
             ({data.capacityUtilization.activeReps}/{data.capacityUtilization.totalReps} Reps Loaded)
           </span>
         </div>
 
         {/* Capacity Bar */}
-        <div className="mt-3.5">
-          <div className="flex justify-between text-[10px] text-slate-400 mb-1">
-            <span>Optimal Band: 75% - 85%</span>
-            <span className="text-cyan-400 font-mono font-medium">Kawas Active</span>
+        <div className="mt-4">
+          <div className="flex justify-between text-[11px] text-slate-500 mb-1.5">
+            <span>Healthy Target: 70% - 85%</span>
+            <span className="text-indigo-600 font-medium">Auto-Balancing</span>
           </div>
-          <div className="w-full bg-slate-800/80 rounded-full h-2 relative overflow-hidden">
+          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
             <div 
               className={`h-full rounded-full transition-all duration-700 ${
                 data.capacityUtilization.percentage > 90 
-                  ? 'bg-rose-500 shadow-glow-rose' 
+                  ? 'bg-rose-500' 
                   : data.capacityUtilization.percentage > 80 
-                  ? 'bg-gradient-to-r from-blue-500 to-cyan-400' 
+                  ? 'bg-blue-600' 
                   : 'bg-emerald-500'
               }`}
               style={{ width: `${data.capacityUtilization.percentage}%` }}
             />
           </div>
-          <div className="text-[10px] text-slate-500 mt-1.5 flex items-center justify-between">
-            <span>Linear Program solver balanced</span>
-            <span className="text-cyan-400 hover:underline cursor-pointer">Module 4 &rarr;</span>
+          <div className="text-[11px] text-slate-500 mt-2 flex items-center justify-between">
+            <span>Quota capacity balanced</span>
+            <span className="text-blue-600 font-semibold hover:underline cursor-pointer">View Team &rarr;</span>
           </div>
         </div>
       </div>

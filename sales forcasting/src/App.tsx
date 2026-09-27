@@ -27,7 +27,8 @@ import {
   ShieldCheck,
   TrendingUp,
   Cpu,
-  Layers
+  Layers,
+  ChevronDown
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -56,9 +57,8 @@ export function App() {
       return lead;
     }));
 
-    showToast(`Lead successfully assigned to ${repName}! PRISM prior prioritized in outbound queue.`);
+    showToast(`Lead assigned to ${repName}! Account prioritized in outbound pipeline.`);
     
-    // Trigger small confetti
     confetti({
       particleCount: 30,
       spread: 45,
@@ -70,16 +70,16 @@ export function App() {
     setIsSimulating(true);
     setTimeout(() => {
       setIsSimulating(false);
-      showToast('Neural Hawkes intensity kernels & Causal SHAP graphs recalibrated across all 142 deals.');
-    }, 1200);
+      showToast('Sales forecast models recalibrated across all 142 deals.');
+    }, 1000);
   };
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
       {/* Toast Notification Banner */}
       {notification && (
-        <div className="fixed top-18 right-6 z-50 flex items-center space-x-2.5 px-4 py-3 rounded-xl bg-slate-900/95 border border-emerald-500/50 shadow-2xl backdrop-blur-md animate-bounce text-xs font-medium text-emerald-300">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed top-20 right-6 z-50 flex items-center space-x-2.5 px-4 py-3 rounded-xl bg-white border border-emerald-500 shadow-xl animate-bounce text-xs font-semibold text-emerald-800">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{notification}</span>
         </div>
       )}
@@ -90,86 +90,86 @@ export function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-[1720px] w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
         {/* Navigation Bar / Module Switcher */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0f172a]/60 p-2 rounded-2xl border border-slate-800/80 backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-2 rounded-2xl border border-slate-200 shadow-soft">
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <button
               onClick={() => setActiveTab('all')}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
+              className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl font-bold transition-all ${
                 activeTab === 'all'
-                  ? 'bg-blue-600 text-white shadow-glow-blue'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               <LayoutDashboard className="w-4 h-4" />
-              <span>Full Executive Suite</span>
+              <span>Executive Overview</span>
             </button>
 
             <button
               onClick={() => setActiveTab('hawkes')}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-medium transition-all ${
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
                 activeTab === 'hawkes'
-                  ? 'bg-blue-600 text-white shadow-glow-blue'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Zap className="w-3.5 h-3.5 text-cyan-400" />
-              <span>M1: Continuous Hawkes</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('prism')}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-medium transition-all ${
-                activeTab === 'prism'
-                  ? 'bg-blue-600 text-white shadow-glow-blue'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>M2: PRISM Cold-Start</span>
+              <Zap className="w-3.5 h-3.5 text-blue-600" />
+              <span>Buyer Engagement</span>
             </button>
 
             <button
               onClick={() => setActiveTab('causal')}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-medium transition-all ${
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
                 activeTab === 'causal'
-                  ? 'bg-blue-600 text-white shadow-glow-blue'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <BrainCircuit className="w-3.5 h-3.5 text-violet-400" />
-              <span>M3: Causal XAI What-If</span>
+              <BrainCircuit className="w-3.5 h-3.5 text-indigo-600" />
+              <span>"What-If" Simulator</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('prism')}
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
+                activeTab === 'prism'
+                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Prospecting Prioritization</span>
             </button>
 
             <button
               onClick={() => setActiveTab('kawas')}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-medium transition-all ${
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
                 activeTab === 'kawas'
-                  ? 'bg-blue-600 text-white shadow-glow-blue'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Scale className="w-3.5 h-3.5 text-cyan-400" />
-              <span>M4: Kawas Allocation</span>
+              <Scale className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Team Capacity Planner</span>
             </button>
 
             <button
               onClick={() => setActiveTab('multimodal')}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-medium transition-all ${
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
                 activeTab === 'multimodal'
-                  ? 'bg-blue-600 text-white shadow-glow-blue'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Headphones className="w-3.5 h-3.5 text-amber-400" />
-              <span>M5: Multimodal & Macro</span>
+              <Headphones className="w-3.5 h-3.5 text-amber-600" />
+              <span>Call Sentiment & Market</span>
             </button>
           </div>
 
           {/* Horizon Period Selector */}
-          <div className="flex items-center space-x-2 text-xs text-slate-400 self-end sm:self-auto px-2">
+          <div className="flex items-center space-x-2 text-xs text-slate-500 self-end sm:self-auto px-2">
             <span>Forecast Horizon:</span>
-            <span className="font-mono font-semibold text-white px-2 py-1 rounded bg-slate-900 border border-slate-800">
-              Q4 Continuous (Rolling 90d)
+            <span className="font-semibold text-slate-900 px-3 py-1 rounded-lg bg-slate-100 border border-slate-200">
+              Q4 Continuous (Rolling 90 Days)
             </span>
           </div>
         </div>
@@ -179,7 +179,7 @@ export function App() {
 
         {/* Dashboard Modules Grid */}
         <div className="space-y-6">
-          {/* Module 1: Continuous Neural Hawkes Interaction Stream */}
+          {/* Module 1: Continuous Buyer Engagement */}
           {(activeTab === 'all' || activeTab === 'hawkes') && (
             <HawkesStreamModule 
               timeSeriesData={hawkesTimeSeriesData} 
@@ -187,14 +187,14 @@ export function App() {
             />
           )}
 
-          {/* Module 3: Causal XAI & Counterfactual "What-If" Workspace */}
+          {/* Module 3: Causal XAI & Counterfactual What-If Workspace */}
           {(activeTab === 'all' || activeTab === 'causal') && (
             <CausalXaiWorkspace 
               scenarios={opportunityScenarios} 
             />
           )}
 
-          {/* Module 2: Two-Stage PRISM Cold-Start Prospecting View */}
+          {/* Module 2: Prospecting Prioritization (PRISM) */}
           {(activeTab === 'all' || activeTab === 'prism') && (
             <PrismProspectingModule 
               leads={leadsList} 
@@ -202,15 +202,15 @@ export function App() {
             />
           )}
 
-          {/* Module 4: Prescriptive Salesforce Resource Allocation (Kawas Solver Widget) */}
+          {/* Module 4: Sales Team Capacity & Smart Routing */}
           {(activeTab === 'all' || activeTab === 'kawas') && (
             <KawasSolverWidget 
               reps={kawasRepsData} 
-              onRebalance={() => showToast('MILP Simplex Solver converged: Rep workloads balanced within target 85% capacity threshold.')}
+              onRebalance={() => showToast('Team capacity balanced: workloads distributed within healthy 85% utilization threshold.')}
             />
           )}
 
-          {/* Module 5: Multimodal Sentiment & Macroeconomic Ticker */}
+          {/* Module 5: Customer Call Sentiment & Macroeconomic Pulse */}
           {(activeTab === 'all' || activeTab === 'multimodal') && (
             <MultimodalTickerModule 
               macroIndicators={macroIndicators} 
@@ -221,20 +221,20 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-[#090d16] py-6 px-4 lg:px-8 mt-12 text-xs text-slate-500">
+      <footer className="border-t border-slate-200 bg-white py-6 px-4 lg:px-8 mt-12 text-xs text-slate-500 shadow-soft">
         <div className="max-w-[1720px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
-            <span className="font-semibold text-slate-400">AURA-CRO Enterprise Engine</span>
-            <span>• Continuous Hawkes Intensity + Pearl Causal Inference + Mixed-Integer Linear Solver</span>
+            <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span className="font-semibold text-slate-700">Aura Sales Intelligence System</span>
+            <span>• Continuous Hawkes Event Process + Causal Explainability + Capacity Balancing</span>
           </div>
 
-          <div className="flex items-center space-x-4 text-[11px] font-mono">
-            <span>Latency: 18ms</span>
+          <div className="flex items-center space-x-4 text-xs font-medium text-slate-500">
+            <span>Model Latency: 18ms</span>
             <span>•</span>
-            <span>Hawkes Kernel: Exponential α=1.48</span>
+            <span>Accuracy: 95% CI</span>
             <span>•</span>
-            <span>SHAP Explainer: TreeSHAP v0.44</span>
+            <span>Real-Time Sales Sync</span>
           </div>
         </div>
       </footer>
