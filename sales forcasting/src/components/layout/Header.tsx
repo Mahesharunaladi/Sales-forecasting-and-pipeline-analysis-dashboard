@@ -3,19 +3,25 @@ import {
   Sparkles, 
   RefreshCw, 
   Bell, 
-  CheckCircle,
-  HelpCircle,
-  TrendingUp,
-  Search,
+  CheckCircle, 
+  TrendingUp, 
+  LogOut,
   ChevronDown
 } from 'lucide-react';
 
 interface HeaderProps {
   onRefresh?: () => void;
   isSimulating?: boolean;
+  onLogout?: () => void;
+  user?: { name: string; email: string; role: string };
 }
 
-export const Header: React.FC<HeaderProps> = ({ onRefresh, isSimulating }) => {
+export const Header: React.FC<HeaderProps> = ({ 
+  onRefresh, 
+  isSimulating,
+  onLogout,
+  user = { name: 'Jordan Davis', email: 'jordan.davis@salespulse.com', role: 'VP of Sales' }
+}) => {
   return (
     <header className="border-b border-slate-200 bg-white sticky top-0 z-50 px-4 lg:px-8 py-3.5 shadow-sm transition-all">
       <div className="max-w-[1720px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -28,11 +34,11 @@ export const Header: React.FC<HeaderProps> = ({ onRefresh, isSimulating }) => {
           
           <div>
             <div className="flex items-center space-x-2.5">
-              <h1 className="text-lg font-bold tracking-tight text-slate-900 flex items-center gap-1.5">
-                Aura<span className="text-blue-600">Sales</span>
+              <h1 className="text-lg font-bold tracking-tight text-slate-900 flex items-center gap-1">
+                Sales<span className="text-blue-600">Pulse</span>
               </h1>
               <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200/60">
-                AI Forecast Engine
+                Forecast Engine
               </span>
               <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -45,14 +51,8 @@ export const Header: React.FC<HeaderProps> = ({ onRefresh, isSimulating }) => {
           </div>
         </div>
 
-        {/* Global Controls & Status */}
+        {/* Global Controls & User Profile */}
         <div className="flex items-center space-x-3 self-end md:self-auto">
-          {/* Status Indicator */}
-          <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>All models calibrated &bull; <strong>95% accuracy</strong></span>
-          </div>
-
           {/* Quick Refresh */}
           <button
             onClick={onRefresh}
@@ -72,15 +72,25 @@ export const Header: React.FC<HeaderProps> = ({ onRefresh, isSimulating }) => {
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-600"></span>
           </button>
 
-          {/* User Profile Avatar */}
+          {/* User Profile Avatar & Logout */}
           <div className="flex items-center space-x-2 pl-2 border-l border-slate-200">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-              JD
+            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
+              {user.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div className="hidden lg:block text-left">
-              <div className="text-xs font-semibold text-slate-800 leading-tight">Jordan Davis</div>
-              <div className="text-[11px] text-slate-500 leading-tight">VP of Sales</div>
+              <div className="text-xs font-semibold text-slate-800 leading-tight">{user.name}</div>
+              <div className="text-[11px] text-slate-500 leading-tight">{user.role}</div>
             </div>
+
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="p-2 ml-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                title="Log out to landing page"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
       </div>

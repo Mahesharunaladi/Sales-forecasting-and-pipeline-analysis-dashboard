@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { LandingPage } from './components/landing/LandingPage';
 import { Header } from './components/layout/Header';
 import { ExecutiveKpiBar } from './components/layout/ExecutiveKpiBar';
 import { HawkesStreamModule } from './components/modules/HawkesStreamModule';
@@ -24,15 +25,18 @@ import {
   Scale, 
   Headphones, 
   CheckCircle2, 
-  ShieldCheck,
-  TrendingUp,
-  Cpu,
-  Layers,
-  ChevronDown
+  ArrowLeft
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState({
+    name: 'Jordan Davis',
+    email: 'jordan.davis@salespulse.com',
+    role: 'VP of Sales'
+  });
+
   const [activeTab, setActiveTab] = useState<string>('all');
   const [leadsList, setLeadsList] = useState(prismProspects);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -43,6 +47,23 @@ export function App() {
     setTimeout(() => {
       setNotification(null);
     }, 4000);
+  };
+
+  const handleLogin = (user: { name: string; email: string; role: string }) => {
+    setCurrentUser(user);
+    setIsLoggedIn(true);
+    showToast(`Welcome back, ${user.name}! Live pipeline metrics loaded.`);
+
+    confetti({
+      particleCount: 50,
+      spread: 60,
+      origin: { y: 0.6 },
+      colors: ['#2563eb', '#10b981', '#6366f1']
+    });
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
   };
 
   const handleAssignLead = (leadId: string, repName: string) => {
@@ -57,7 +78,7 @@ export function App() {
       return lead;
     }));
 
-    showToast(`Lead assigned to ${repName}! Account prioritized in outbound pipeline.`);
+    showToast(`Lead assigned to ${repName}! Prioritized in outbound pipeline.`);
     
     confetti({
       particleCount: 30,
@@ -74,6 +95,11 @@ export function App() {
     }, 1000);
   };
 
+  // If not logged in, render the Landing Page with workflow explanation & login/register
+  if (!isLoggedIn) {
+    return <LandingPage onLogin={handleLogin} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
       {/* Toast Notification Banner */}
@@ -85,7 +111,12 @@ export function App() {
       )}
 
       {/* Top Header */}
-      <Header onRefresh={handleSyncAI} isSimulating={isSimulating} />
+      <Header 
+        onRefresh={handleSyncAI} 
+        isSimulating={isSimulating}
+        onLogout={handleLogout}
+        user={currentUser}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-[1720px] w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
@@ -225,8 +256,8 @@ export function App() {
         <div className="max-w-[1720px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-            <span className="font-semibold text-slate-700">Aura Sales Intelligence System</span>
-            <span>• Continuous Hawkes Event Process + Causal Explainability + Capacity Balancing</span>
+            <span className="font-semibold text-slate-700">SalesPulse Platform</span>
+            <span>&bull; Continuous Hawkes Event Process + Causal Explainability + Capacity Balancing</span>
           </div>
 
           <div className="flex items-center space-x-4 text-xs font-medium text-slate-500">
@@ -234,7 +265,12 @@ export function App() {
             <span>•</span>
             <span>Accuracy: 95% CI</span>
             <span>•</span>
-            <span>Real-Time Sales Sync</span>
+            <button 
+              onClick={handleLogout}
+              className="text-blue-600 hover:underline"
+            >
+              Back to Overview
+            </button>
           </div>
         </div>
       </footer>
