@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #090d16;
+  color: #f1f5f9;
+  overflow-x: hidden;
+}
+
+/* Custom modern scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(19, 29, 51, 0.85);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 15px -3px rgba(59, 130, 246, 0.15);
+}
+
+/* Glowing text utilities */
+.text-glow-blue {
+  text-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+}
+
+.text-glow-emerald {
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+}
+
+.text-glow-rose {
+  text-shadow: 0 0 12px rgba(244, 63, 94, 0.5);
+}
+
+/* Custom range slider styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-track {
+  background: #1e293b;
+  height: 6px;
+  border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  width: 18px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  margin-top: -6px;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background-color: #60a5fa;
+}
+
+/* Custom Recharts Tooltip Reset */
+.recharts-default-tooltip {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5) !important;
+  padding: 8px 12px !important;
+}
